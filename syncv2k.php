@@ -54,7 +54,7 @@ class syncv2k
 				'trace' => 1,
 				'exceptions' => 1,
 				'soap_version' => SOAP_1_2),
-				'http://160.79.219.121/replay/services/VidyoReplayContentManagementService?wsdl')
+				Vidyo2KalturaConfig::VIDYO_REPLAY_SERVER.'/replay/services/VidyoReplayContentManagementService?wsdl')
 				or exit("Unable to create soap client!");
 		$this->logToFile('SUCCESS initializing Vidyo success');
 	}
@@ -100,7 +100,7 @@ class syncv2k
 	 */
 	private function copyVidyoRecording2Kaltura ($recording) 
 	{
-		$recordingVideoFileUrl = 'http://160.79.219.121'.$recording->fileLink;
+		$recordingVideoFileUrl = Vidyo2KalturaConfig::VIDYO_REPLAY_SERVER.$recording->fileLink;
 		$filePath = $this->currdir.$recording->guid.'.flv';
 		
 		// download the recording using CURL (we can't pass this to Kaltura, cause Kaltura's import doesn't support authorization.

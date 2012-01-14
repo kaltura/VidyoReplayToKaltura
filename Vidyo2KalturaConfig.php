@@ -8,4 +8,5 @@ class Vidyo2KalturaConfig
 	const VIDYO_KALTURA_TAGS = 'vidyorecording';
 	const VIDYO_USER = 'zohar';
 	const VIDYO_PASSWORD = 'zohar';
+	const VIDYO_REPLAY_SERVER = 'http://160.79.219.121';
 }
