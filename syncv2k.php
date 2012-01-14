@@ -58,7 +58,7 @@ class syncv2k
 		// list Kaltura entries that are Vidyo recording, ascending by date
 		$listFilter = new KalturaMediaEntryFilter();
 		$listFilter->orderBy = KalturaMediaEntryOrderBy::CREATED_AT_DESC;
-		$listFilter->tagsLike = 'vidyorecording';
+		$listFilter->tagsLike = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS;
 		$results = $this->client->media->listAction($listFilter);
 		// get the last Vidyo recording that was added to Kaltura
 		$entry = @$results->objects[0];
@@ -67,8 +67,7 @@ class syncv2k
 		{
 			$this->kalturaentries[$entry->referenceId] = $entry;
 		}
-		$this->logToFile('SUCCESS list Kaltura success');
-		
+				
 		// list Vidyo recordings, ascending by date
 		$recordsSearch = new RecordsSearchRequest(null, null, null, null, null, sortBy::date, sortDirection::DESC, null, null, null);
 		$recordsSearchResult = $this->vidyoClient->RecordsSearch($recordsSearch);
@@ -119,7 +118,7 @@ class syncv2k
 	    $entry->mediaType = KalturaMediaType::VIDEO;
 	    $entry->referenceId = $recording->guid;
 	    $entry->userId = $recording->userFullName;
-	    $entry->tags = $recording->tags;
+	    $entry->tags = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS.','.$recording->tags;
 	    $entry->name = $recording->title;
 	    $entry = $this->client->media->add($entry);
 	    $this->logToFile('==== SUCCESS creating new Kaltura Entry Id: '.$entry->id);
