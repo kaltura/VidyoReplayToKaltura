@@ -122,6 +122,7 @@ class syncv2k
 	    $entry->userId = $recording->userFullName;
 	    $entry->tags = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS.','.$recording->tags;
 	    $entry->name = $recording->title;
+	    $entry->categories = Vidyo2KalturaConfig::KALTURA_VIDYO_RECORDINGS_CATEGORY;
 	    $entry = $this->client->media->add($entry);
 	    $this->logToFile('==== SUCCESS creating new Kaltura Entry Id: '.$entry->id);
 	    
