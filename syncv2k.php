@@ -13,12 +13,22 @@ class syncv2k
 	function __construct(KalturaClient $client = null)
 	{
 		$this->currdir = dirname( realpath( __FILE__ ) ) . DIRECTORY_SEPARATOR;
+		$this->cleanLogFile();
 		$this->initializeClients();
+	}
+	
+	function cleanLogFile() 
+	{
+		$logFile = $this->currdir.syncv2k::logFilename;
+		$fd = fopen($logFile, "w");
+		fwrite($fd, '');
+		fclose($fd);
 	}
 	
 	function logToFile($msg)
 	{
-		$fd = fopen(syncv2k::logFilename, "a");
+		$logFile = $this->currdir.syncv2k::logFilename;
+		$fd = fopen($logFile, "a");
 		$str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg;
 		fwrite($fd, $str . "\n");
 		fclose($fd);
