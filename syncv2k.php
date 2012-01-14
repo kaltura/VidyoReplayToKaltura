@@ -7,6 +7,7 @@ class syncv2k
 	private $client;
 	private $vidyoClient;
 	private $currdir;
+	private $kalturaentries;
 	const logFilename = 'syncVidyo2Kaltura.log';
 	
 	function __construct(KalturaClient $client = null)
@@ -62,6 +63,10 @@ class syncv2k
 		// get the last Vidyo recording that was added to Kaltura
 		$entry = @$results->objects[0];
 		$lastVidyoRecordingIdAdded = @$entry->referenceId;
+		foreach ($results->objects as $entry) 
+		{
+			$this->kalturaentries[$entry->referenceId] = $entry;
+		}
 		$this->logToFile('SUCCESS list Kaltura success');
 		
 		// list Vidyo recordings, ascending by date
@@ -74,13 +79,13 @@ class syncv2k
 		{
 			$msg = '**** SUCCESS Kaltura and Vidyo are synced! ('.$recordsSearchResult->searchCount.' recordings)';
 			$this->logToFile($msg);
-			return $msg;
 		} else {
-			//echo '<pre>'.print_r($recordsSearchResult->records[0], true).'</pre>';
-			$this->copyVidyoRecording2Kaltura ($recordsSearchResult->records[0]);
-			return;
 			foreach ($recordsSearchResult->records as $recording) 
 			{
+				if (isset($this->kalturaentries[$recording->guid])) {
+					$this->logToFile('--- already in Kaltura: '.$recording->guid);
+					continue;
+				}
 				$this->logToFile('==== syncing '.$recording->guid);
 				$this->copyVidyoRecording2Kaltura($recording);
 				$this->logToFile('==== SUCCESS syncing '.$recording->guid.' ====');
@@ -134,4 +139,4 @@ class syncv2k
 }
 
 $syncer = new syncv2k();
-echo $syncer->syncVidyo2Kaltura();
+$syncer->syncVidyo2Kaltura();
