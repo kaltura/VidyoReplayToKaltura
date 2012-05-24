@@ -49,8 +49,8 @@ class syncv2k
 		//initialize the Vidyo client - 
 		require_once 'vidyomanage/VidyoReplayContentManagementService.php';
 		$this->vidyoClient = new VidyoReplayContentManagementService(array(
-				'login' => 'zohar',
-				'password' => 'zohar',
+				'login' => Vidyo2KalturaConfig::VIDYO_USER,
+				'password' => Vidyo2KalturaConfig::VIDYO_PASSWORD,
 				'trace' => 1,
 				'exceptions' => 1,
 				'soap_version' => SOAP_1_2),
