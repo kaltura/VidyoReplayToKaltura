@@ -65,32 +65,57 @@ class syncv2k
 	 */
 	public function syncVidyo2Kaltura ()
 	{
-		// list Kaltura entries that are Vidyo recording, ascending by date
+		// list Kaltura entries that are Vidyo recording, descending by date
 		$listFilter = new KalturaMediaEntryFilter();
-		$listFilter->orderBy = KalturaMediaEntryOrderBy::CREATED_AT_DESC;
+		$listFilter->orderBy = KalturaMediaEntryOrderBy::CREATED_AT_DESC; //in Flacon we can do: PARTNER_SORT_VALUE_DESC;
+		$listFilter->statusIn = '-2,-1,0,1,2,4,5,6,7'; //add 3 to exclude DELETED entries
 		$listFilter->tagsLike = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS;
-		$results = $this->client->media->listAction($listFilter);
-		foreach ($results->objects as $entry) 
-		{
+		$pager = new KalturaFilterPager();
+		$pager->pageSize = 1;
+		$pager->pageIndex = 1;
+		$results = $this->client->media->listAction($listFilter, $pager);
+		$entry = null;
+		$recordingStartSearch = 0;
+		$hasRecordingsInKaltura = count($results->objects);
+		$this->logToFile('*=== '.($hasRecordingsInKaltura > 0 ? 'has recordings in Kaltura' : 'no recordings in Kaltura found'));
+		if ($hasRecordingsInKaltura) {
+			$entry = $results->objects[0];
+			$this->logToFile('==== last vidyoRecording on Kaltura is: '.$entry->partnerSortValue . ', GUID: ' . $entry->referenceId);
 			$this->kalturaentries[$entry->referenceId] = $entry;
+			$recordingStartSearch = $entry->partnerSortValue;
 		}
 		
 		// list Vidyo recordings, ascending by date
-		$recordsSearch = new RecordsSearchRequest(null, null, null, null, null, sortBy::date, sortDirection::DESC, null, null, null);
+		$recordsSearch = new RecordsSearchRequest(null, null, null, null, null, sortBy::date, sortDirection::ASC, null, $recordingStartSearch, null);
 		$recordsSearchResult = $this->vidyoClient->RecordsSearch($recordsSearch);
 		$this->logToFile('SUCCESS list Vidyo success');
-		
-		foreach ($recordsSearchResult->records as $recording) 
-		{
-			if (isset($this->kalturaentries[$recording->guid])) {
-				$this->logToFile('--- already in Kaltura: '.$recording->guid);
-				continue;
-			}
-			$this->logToFile('==== syncing '.$recording->guid);
-			$this->copyVidyoRecording2Kaltura($recording);
-			$this->logToFile('==== SUCCESS syncing '.$recording->guid.' ====');
+		$vidyoRecordsCount = count($recordsSearchResult->records);
+		$this->logToFile('==== syncing '.$vidyoRecordsCount.' new recordings');
+		$lastVidyoRecording = null;	
+		if ($vidyoRecordsCount > 1) {
+			$lastVidyoRecording = $recordsSearchResult->records[($lastVidyoRecording-1)];
+		} else {
+			$lastVidyoRecording = $recordsSearchResult->records;
 		}
-		
+		if (($vidyoRecordsCount == 0) || ($entry && $lastVidyoRecording->id == $entry->partnerSortValue)) {
+			$this->logToFile('KALTURA AND VIDYO ARE ALREADY IN SYNC...');
+			$this->logToFile('EXITING.');
+		} else {
+			if ($vidyoRecordsCount > 1) {
+				$vidyoRecords = $recordsSearchResult->records;
+				foreach ($vidyoRecords as $recording) 
+				{
+					$this->logToFile('==== syncing '.$recording->id . ', GUID: ' . $recording->guid);
+					$this->copyVidyoRecording2Kaltura($recording);
+					$this->logToFile('==== SUCCESS syncing '.$recording->guid.' ====');
+				}
+			} else {
+				$this->logToFile('==== syncing '.$lastVidyoRecording->id . ', GUID: ' . $lastVidyoRecording->guid);
+				$this->copyVidyoRecording2Kaltura($lastVidyoRecording);
+				$this->logToFile('==== SUCCESS syncing '.$lastVidyoRecording->guid.' ====');
+			}
+		}
+
 		$this->logToFile('**** SUCCESS Kaltura and Vidyo are synced! ('.$recordsSearchResult->searchCount.' recordings)');
 	}
 	
@@ -119,6 +144,7 @@ class syncv2k
 	    $entry = new KalturaMediaEntry();
 	    $entry->mediaType = KalturaMediaType::VIDEO;
 	    $entry->referenceId = $recording->guid;
+            $entry->partnerSortValue = $recording->id;
 	    $entry->userId = $recording->userFullName;
 	    $entry->tags = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS.','.$recording->tags;
 	    $entry->name = $recording->title;

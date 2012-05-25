@@ -19,7 +19,7 @@ $vidyoClient = new VidyoReplayContentManagementService(array(
 								or exit("Unable to create soap client!");
 
 // create a new records search object, make it sort by date, ascending
-$recordsSearch = new RecordsSearchRequest(null, null, null, null, null, sortBy::date, sortDirection::DESC, null, null, null);
+$recordsSearch = new RecordsSearchRequest(null, null, null, null, null, sortBy::date, sortDirection::ASC, null, null, null);
 // invoke the vidyoReplay client search method passing the records search object 
 $recordsSearchResult = $vidyoClient->RecordsSearch($recordsSearch);
 //echo records array:
