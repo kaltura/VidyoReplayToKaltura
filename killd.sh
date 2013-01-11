@@ -1,14 +1,15 @@
 #!/bin/bash
 #run this kill/stop the daemon running the Vidyo to Kaltura syncer
 
-PID=`ps -eaf | grep rund.sh | grep -v grep | awk '{ print $2 }'`
-if [[ $PID ]]; then 
-	echo 'killing the daemon: '$PID
-	kill $PID 
-else 
-	echo 'daemon is not running'
+if [ -z "$1" ]; then
+	PID=`ps -eaf | grep rund.sh | grep -v grep | awk '{ print $2 }'`
+	if [[ $PID ]]; then 
+		echo 'killing the daemon: '$PID
+		kill $PID 
+	else 
+		echo 'daemon is not running'
+	fi
 fi
-
 
 PID=`ps -eaf | grep syncv2k.php | grep -v grep | awk '{ print $2 }'`
 if [[ $PID ]]; then
