@@ -24,10 +24,3 @@ else
 	echo 'deleting lock folder'
 	rm -Rf /tmp/syncv2klockdir
 fi
-
-#kill the daemon:
-#kill $(ps -eaf | grep rund.sh | grep -v grep | awk '{ print $2 }')
-#kill the syncer script:
-#kill $(ps -eaf | grep syncv2k.php | grep -v grep | awk '{ print $2 }')
-#cleanup the lock dir
-#rmdir /tmp/syncv2klockdir
