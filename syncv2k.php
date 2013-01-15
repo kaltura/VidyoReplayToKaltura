@@ -1,4 +1,6 @@
 <?php
+ini_set('memory_limit', '128M');
+set_time_limit(0);
 //initialize the Kaltura client -
 require_once('kaltura-php5/KalturaClient.php');
 require_once('Vidyo2KalturaConfig.php');
@@ -9,6 +11,7 @@ class syncv2k
 	private $currdir;
 	private $kalturaentries;
 	const logFilename = 'syncVidyo2Kaltura.log';
+	public $initializeSuccess = false;
 	
 	function __construct(KalturaClient $client = null)
 	{
@@ -56,7 +59,14 @@ class syncv2k
 				'soap_version' => SOAP_1_2),
 				Vidyo2KalturaConfig::VIDYO_REPLAY_SERVER.'/replay/services/VidyoReplayContentManagementService?wsdl')
 				or exit("Unable to create soap client!");
+
 		$this->logToFile('SUCCESS initializing Vidyo success');
+		//} catch (Exception $ex) {
+		//	$this->logToFile('ERROR: VidyoReplay connection fault - faultcode: '.print_r($ex, true));
+		//	$this->initializeSuccess = false;
+		//	return;
+
+		$this->initializeSuccess = true;
 	}
 	
 	/**
@@ -68,7 +78,7 @@ class syncv2k
 		// list Kaltura entries that are Vidyo recording, descending by date
 		$listFilter = new KalturaMediaEntryFilter();
 		$listFilter->orderBy = KalturaMediaEntryOrderBy::CREATED_AT_DESC; //in Flacon we can do: PARTNER_SORT_VALUE_DESC;
-		$listFilter->statusIn = '-2,-1,0,1,2,4,5,6,7'; //add 3 to exclude DELETED entries
+		$listFilter->statusIn = '-2,-1,0,1,2,4,5,6,7'; //add 3 to include DELETED entries
 		$listFilter->tagsLike = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS;
 		$pager = new KalturaFilterPager();
 		$pager->pageSize = 1;
@@ -93,6 +103,7 @@ class syncv2k
 		$this->logToFile('==== syncing '.$vidyoRecordsCount.' new recordings');
 		$lastVidyoRecording = null;	
 		if ($vidyoRecordsCount > 1) {
+			if ($lastVidyoRecording < 1) $lastVidyoRecording = 1;
 			$lastVidyoRecording = $recordsSearchResult->records[($lastVidyoRecording-1)];
 		} else {
 			$lastVidyoRecording = $recordsSearchResult->records;
@@ -125,46 +136,32 @@ class syncv2k
 	 */
 	private function copyVidyoRecording2Kaltura ($recording) 
 	{
-		$recordingVideoFileUrl = Vidyo2KalturaConfig::VIDYO_REPLAY_SERVER.$recording->fileLink;
-		$filePath = $this->currdir.$recording->guid.'.flv';
-		
-		// download the recording using CURL (we can't pass this to Kaltura, cause Kaltura's import doesn't support authorization.
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_URL, $recordingVideoFileUrl);
-		// vidyoReplay requires BASIC HTTP authentication, username:password
-		curl_setopt($ch, CURLOPT_USERPWD, Vidyo2KalturaConfig::VIDYO_USER.":".Vidyo2KalturaConfig::VIDYO_PASSWORD); 
-		$rawdata = curl_exec($ch);
-	    if ( file_exists ($filePath) ) unlink($filePath);
-	    file_put_contents($filePath, $rawdata);
-	    curl_close ($ch);
-	    $this->logToFile('==== SUCCESS downloading the file of recording: '.$filePath);
-	    
-	    // create a new Kaltura Media Entry and copy the Vidyo Recording metadata to it
-	    $entry = new KalturaMediaEntry();
-	    $entry->mediaType = KalturaMediaType::VIDEO;
-	    $entry->referenceId = $recording->guid;
-            $entry->partnerSortValue = $recording->id;
-	    $entry->userId = $recording->userFullName;
-	    $entry->tags = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS.','.$recording->tags;
-	    $entry->name = $recording->title;
-	    $entry->categories = Vidyo2KalturaConfig::KALTURA_VIDYO_RECORDINGS_CATEGORY;
-	    $entry = $this->client->media->add($entry);
-	    $this->logToFile('==== SUCCESS creating new Kaltura Entry Id: '.$entry->id);
-	    
-	    // upload the recording video file to Kaltura,  
-	    $uploadToken = $this->client->uploadToken->add();
-	    $this->logToFile('==== SUCCESS create upload token, id: '.$uploadToken->id);
-	    $this->client->uploadToken->upload($uploadToken->id, $filePath);
-	    $resource = new KalturaUploadedFileTokenResource();
-	    $resource->token = $uploadToken->id;
-	    $this->client->media->addContent($entry->id, $resource);
-	    $this->logToFile('==== SUCCESS uploading the Vidyo recording to Kaltura Entry Id: '.$entry->id);
-	    
-	    // cleanup the downloaded recording file
-	    unlink($filePath);
+		// here we deconstruct the URL VidyoReplay is giving us, and we add the http User and Passwrod to it
+                // that way, we allow Kaltura to import the file directly from the VidyoReplay server
+                $url = $recording->fileLink;
+                $urlParts = parse_url($url);
+                $recordingVideoFileUrl = $urlParts["scheme"].'://'.Vidyo2KalturaConfig::VIDYO_USER.':'.Vidyo2KalturaConfig::VIDYO_PASSWORD.'@'.$urlParts["host"].$urlParts["path"].'?'.$urlParts["query"];
+                // create a new Kaltura Media Entry and copy the Vidyo Recording metadata to it
+                $entry = new KalturaMediaEntry();
+                $entry->mediaType = KalturaMediaType::VIDEO;
+                $entry->referenceId = $recording->guid;
+                $entry->partnerSortValue = $recording->id;
+                $entry->userId = $recording->userFullName;
+                $entry->tags = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS.','.$recording->tags;
+                $entry->name = $recording->title;
+                $entry->categories = Vidyo2KalturaConfig::KALTURA_VIDYO_RECORDINGS_CATEGORY;
+                $entry = $this->client->media->add($entry);
+                $this->logToFile('==== SUCCESS creating new Kaltura Entry Id: '.$entry->id.' of recording: '.$recording->id);
+
+                // make Kaltura import the recording file from the VidyoReplay server 
+                $resource = new KalturaUrlResource();
+                $resource->url = $recordingVideoFileUrl;
+                $this->client->media->addContent($entry->id, $resource);
+                $this->logToFile('==== SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id);
 	}
 }
 
 $syncer = new syncv2k();
-$syncer->syncVidyo2Kaltura();
+if ($syncer->initializeSuccess == true) {
+	$syncer->syncVidyo2Kaltura();
+}
