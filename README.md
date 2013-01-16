@@ -5,7 +5,14 @@ API connector that synchronizes recordings from VidyoReplay server (http://www.v
 This script keeps VidyoReplay Library and Kaltura account in sync.
 It reads all of the metadata of all recordings in the VidyoReplay server, and submits these recordings and their metadata into a Kaltura account.
 The script doesn't download or upload actual files, instead it creates a new ```KalturaMediaEntry``` of type video, populates its metadata fields using info from VidyoReplay and submits the URL to the recording file in VidyoReplay to Kaltura using the ```media.addContent``` API action.
-
+  
+Background
+-------------
+The php script ```syncv2k.php``` is responsible for synchronizing VidyoReplay and Kaltura.
+The bash script ```rund.sh``` is responsible for running ```syncv2k.php``` as a daemon.
+The bash script ```killd.sh``` is responsible for stopping/killing both ```rund.sh``` and ```syncv2k.php``` as a daemon.
+The php script ```Vidyo2KalturaConfig.php``` is the configuration of the syncer.
+See below for logging details.
 
 First - Prepare The Syncer server
 -------------
