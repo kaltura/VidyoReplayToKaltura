@@ -4,7 +4,7 @@
 #bash pathto/VidyoReplayToKaltura/rund.sh &
 
 #provide a status function:
-if [ "$1"=="status" ]; then
+if [ "$1" = "status" ]; then
         PID=`ps -eaf | grep syncv2k.php | grep -v grep | awk '{ print $2 }'`
         if [[ $PID ]]; then
                 echo 'Syncer daemon is running: '$PID
