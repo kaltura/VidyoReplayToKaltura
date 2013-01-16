@@ -83,13 +83,13 @@ Every synchronization of a specific recording will be as follow (this will repea
 ```log
 [2013/01/16 08:02:36] INFO syncing 63, GUID: f7b86816-b57c-49c4-84d1-ac56d374bd25
 [2013/01/16 08:02:37] SUCCESS creating new Kaltura Entry Id: 1_da03vztz of recording: 63
-[2013/01/16 08:02:38] SUCCESS importing Vidyo recording: http://super:password@www.vidyoreplayserver.com/replay/flvFileStreaming.flv?file=f7b86816-b57c-49c4-84d1-ac56d374bd25 to Kaltura Entry: 1_da03vztz
+[2013/01/16 08:02:38] SUCCESS importing Vidyo recording: URLTORECORDINGFILE to Kaltura Entry: 1_da03vztz
 [2013/01/16 08:02:38] SUCCESS synchronized recording guid: f7b86816-b57c-49c4-84d1-ac56d374bd25
 [2013/01/16 08:02:38] SUCCESS synced custom metadata fields to entry id: 1_da03vztz
 ```
 At the end of every syncer cycle, the following line will be printed:
 ```log
-[2013/01/16 08:03:00] SUCCESS importing Vidyo recording: http://super:password@www.vidyoreplayserver.com/replay/flvFileStreaming.flv?file=f7b86816-b57c-49c4-84d1-ac56d374bd25 to Kaltura Entry: 1_da03vztz
+[2013/01/16 08:03:00] SUCCESS importing Vidyo recording: URLTORECORDINGFILE to Kaltura Entry: 1_da03vztz
 ```
 
 The daemon bash script, outputs any error into: runner.log
