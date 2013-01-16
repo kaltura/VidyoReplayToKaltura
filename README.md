@@ -1,4 +1,4 @@
-Syncer daemon script to synchronize recordings of Vidyo meetings (from VidyoReplay) to Kaltura accoutns
+Syncer daemon script to synchronize meetings recordings from VidyoReplay to Kaltura
 =============
 
 API connector that synchronizes recordings from VidyoReplay server (http://www.vidyo.com) to Kaltura accounts (corp.kaltura.com).
@@ -63,8 +63,9 @@ bash killd.sh
 
 Logging
 -------------
-The syncer main log file is: syncVidyo2Kaltura.log
-While the syncer is runing, to monitor issues, run:
+The syncer main log file is: syncVidyo2Kaltura.log  
+This log file will be truncated every cycle (every time the script is run)  
+While the syncer is runing, to monitor issues, run:  
 ```bash
 tail -f syncVidyo2Kaltura.log
 ```
@@ -83,15 +84,29 @@ Every synchronization of a specific recording will be as follow (this will repea
 ```log
 [2013/01/16 08:02:36] INFO syncing 63, GUID: f7b86816-b57c-49c4-84d1-ac56d374bd25
 [2013/01/16 08:02:37] SUCCESS creating new Kaltura Entry Id: 1_da03vztz of recording: 63
-[2013/01/16 08:02:38] SUCCESS importing Vidyo recording: http://super:password@www.vidyoreplayserver.com/replay/flvFileStreaming.flv?file=f7b86816-b57c-49c4-84d1-ac56d374bd25 to Kaltura Entry: 1_da03vztz
+[2013/01/16 08:02:38] SUCCESS importing Vidyo recording: URLTORECORDINGFILE to Kaltura Entry: 1_da03vztz
 [2013/01/16 08:02:38] SUCCESS synchronized recording guid: f7b86816-b57c-49c4-84d1-ac56d374bd25
 [2013/01/16 08:02:38] SUCCESS synced custom metadata fields to entry id: 1_da03vztz
 ```
 At the end of every syncer cycle, the following line will be printed:
 ```log
-[2013/01/16 08:03:00] SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id
+[2013/01/16 08:03:00] SUCCESS importing Vidyo recording: URLTORECORDINGFILE to Kaltura Entry: 1_da03vztz
 ```
+
+To constantly grep for errors in the log (for monitoring purposes), use the following:
+```bash
+tail -f syncVidyo2Kaltura.log | grep ERROR
+```
+(Replace ERROR with SUCCESS or INFO for status monitoring)   
 
 The daemon bash script, outputs any error into: runner.log
 This file will be empty always. Unless some edge error will occur, in this case it should be reported and investigated on a case by case.
 
+Potential Errors
+-------------
+The syncVidyo2Kaltura.log may show the following error:
+```log
+ERROR failed to push a batch of recordings using multirequest: Operation timed out after 10001 milliseconds with 0 bytes received
+```
+This does NOT necessarily mean that the request failed to reach Kaltura, it only indicates that the response from the server was taking long to arrive, and curl has expired its defined expirylimit
+If this error shows up in your log, edit kaltura-php5/KalturaClientBase.php and look for the definition of $curlTimeout (around line 925), increase its value to a larger int (seconds).
