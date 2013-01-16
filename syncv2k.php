@@ -102,7 +102,6 @@ class syncv2k
 		        // VidyoReplay tends to return a single recording as an object on its own instead of inside an Array
 		        $recordingsArray[] = $recordsSearchResult->records;
 		}
-		$this->logToFile('INFO VidyoList pre-while count: '.count($recordsSearchResult->records));
 		while (is_array($recordsSearchResult->records) && count($recordsSearchResult->records) > 0) {
 		        $recordingsArray = array_merge($recordingsArray, $recordsSearchResult->records);
 		        $start += $bundles;
@@ -114,14 +113,35 @@ class syncv2k
 		if (($vidyoRecordsCount == 0) || ($entry && $recordingsArray[$vidyoRecordsCount-1]->id == $entry->partnerSortValue)) {
                         $this->logToFile('INFO All VidyoReplay recordings are synced in Kaltura. Exiting syncer cycle.');
 		} else {
+			$multiRequestBatches = 30;
+			$count = 0;
+			$this->client->startMultiRequest();
 			foreach ($recordingsArray as $recording)
 			{
 		        	$this->logToFile('INFO syncing '.$recording->id . ', GUID: ' . $recording->guid);
 		        	$this->copyVidyoRecording2Kaltura($recording);
 		        	$this->logToFile('SUCCESS synchronized recording guid: '.$recording->guid);
+				if ($count % $multiRequestBatches == 0) {
+					try {
+						$multiRequest = $this->client->doMultiRequest();
+						$this->logToFile('SUCCESS pushed a batch of recordings using multirequest to Kaltura');
+					} catch (Exception $ex) {
+						$this->logToFile('ERROR failed to push a batch of recordings using multirequest: '.$ex->getMessage());
+					}
+					$this->client->startMultiRequest();
+				}
+				$count += 1;
+			}
+			if ($this->client->isMultiRequest() == true) {
+				try {
+                                        $multiRequest = $this->client->doMultiRequest();
+                                        $this->logToFile('SUCCESS pushed a batch of recordings using multirequest to Kaltura');
+                                } catch (Exception $ex) {
+                                        $this->logToFile('ERROR failed to push a batch of recordings using multirequest: '.$ex->getMessage());
+                                }
 			}
 		}
-		$this->logToFile('SUCCESS Kaltura and Vidyo are synced! ('.$recordsSearchResult->searchCount.' recordings)');
+		$this->logToFile('SUCCESS Kaltura and Vidyo are synced! ('.$vidyoRecordsCount.' recordings)');
 	}
 	
 	/**
