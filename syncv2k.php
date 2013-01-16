@@ -60,10 +60,6 @@ class syncv2k
 				or exit("Unable to create soap client!");
 
 		$this->logToFile('SUCCESS initializing Vidyo success');
-		//} catch (Exception $ex) {
-		//	$this->logToFile('ERROR: VidyoReplay connection fault - faultcode: '.print_r($ex, true));
-		//	$this->initializeSuccess = false;
-		//	return;
 
 		$this->initializeSuccess = true;
 	}
@@ -86,10 +82,10 @@ class syncv2k
 		$entry = null;
 		$recordingStartSearch = 0;
 		$hasRecordingsInKaltura = count($results->objects);
-		$this->logToFile('*=== '.($hasRecordingsInKaltura > 0 ? 'has recordings in Kaltura' : 'no recordings in Kaltura found'));
+		$this->logToFile('INFO '.($hasRecordingsInKaltura > 0 ? 'has recordings in Kaltura' : 'no recordings in Kaltura found'));
 		if ($hasRecordingsInKaltura) {
 			$entry = $results->objects[0];
-			$this->logToFile('==== last vidyoRecording on Kaltura is: '.$entry->partnerSortValue . ', GUID: ' . $entry->referenceId);
+			$this->logToFile('INFO last vidyoRecording on Kaltura is: '.$entry->partnerSortValue . ', GUID: ' . $entry->referenceId);
 			$this->kalturaentries[$entry->referenceId] = $entry;
 			$recordingStartSearch = $entry->partnerSortValue;
 		}
@@ -106,7 +102,7 @@ class syncv2k
 		        // VidyoReplay tends to return a single recording as an object on its own instead of inside an Array
 		        $recordingsArray[] = $recordsSearchResult->records;
 		}
-		$this->logToFile('VidyoList pre-while count: '.count($recordsSearchResult->records));
+		$this->logToFile('INFO VidyoList pre-while count: '.count($recordsSearchResult->records));
 		while (is_array($recordsSearchResult->records) && count($recordsSearchResult->records) > 0) {
 		        $recordingsArray = array_merge($recordingsArray, $recordsSearchResult->records);
 		        $start += $bundles;
@@ -114,19 +110,18 @@ class syncv2k
 		        $recordsSearchResult = $this->vidyoClient->RecordsSearch($recordsSearch);
 		}
 		$vidyoRecordsCount = count($recordingsArray);
-		$this->logToFile('==== syncing '.$vidyoRecordsCount.' new recordings');
+		$this->logToFile('INFO syncing '.$vidyoRecordsCount.' new recordings');
 		if (($vidyoRecordsCount == 0) || ($entry && $recordingsArray[$vidyoRecordsCount-1]->id == $entry->partnerSortValue)) {
-                        $this->logToFile('KALTURA AND VIDYO ARE ALREADY IN SYNC...');
-                        $this->logToFile('EXITING.');
+                        $this->logToFile('INFO All VidyoReplay recordings are synced in Kaltura. Exiting syncer cycle.');
 		} else {
 			foreach ($recordingsArray as $recording)
 			{
-		        	$this->logToFile('==== syncing '.$recording->id . ', GUID: ' . $recording->guid);
+		        	$this->logToFile('INFO syncing '.$recording->id . ', GUID: ' . $recording->guid);
 		        	$this->copyVidyoRecording2Kaltura($recording);
-		        	$this->logToFile('==== SUCCESS syncing '.$recording->guid.' ====');
+		        	$this->logToFile('SUCCESS synchronized recording guid: '.$recording->guid);
 			}
 		}
-		$this->logToFile('**** SUCCESS Kaltura and Vidyo are synced! ('.$recordsSearchResult->searchCount.' recordings)');
+		$this->logToFile('SUCCESS Kaltura and Vidyo are synced! ('.$recordsSearchResult->searchCount.' recordings)');
 	}
 	
 	/**
@@ -151,7 +146,7 @@ class syncv2k
                 $entry->description = $recording->comments;
 		$entry->categories = Vidyo2KalturaConfig::KALTURA_VIDYO_RECORDINGS_CATEGORY;
                 $entry = $this->client->media->add($entry);
-                $this->logToFile('==== SUCCESS creating new Kaltura Entry Id: '.$entry->id.' of recording: '.$recording->id);
+                $this->logToFile('SUCCESS creating new Kaltura Entry Id: '.$entry->id.' of recording: '.$recording->id);
 		
 		// make Kaltura import the recording file from the VidyoReplay server 
                 $resource = new KalturaUrlResource();
@@ -165,9 +160,10 @@ class syncv2k
 			$endTime = strtotime($recording->endTime);
 			$customMetadata = "<metadata><RecordingId>{$recording->id}</RecordingId><RecordingGuid>{$recording->guid}</RecordingGuid><TenantName>{$recording->tenantName}</TenantName><UserName>{$recording->userName}</UserName><UserFullName>{$recording->userFullName}</UserFullName><DateCreated>{$dateCreated}</DateCreated><EndTime>{$endTime}</EndTime><DateCreatedString>{$recording->dateCreatedString}</DateCreatedString><Pin>{$recording->pin}</Pin><RecordScope>{$recording->recordScope}</RecordScope><RoomName>{$recording->roomName}</RoomName><RecorderId>{$recording->recorderId}</RecorderId><Locked>{$recording->locked}</Locked></metadata>";
 			$metadata = $this->client->metadata->add(Vidyo2KalturaConfig::KALTURA_VIDYOREPLAY_METADATA_PROFILE_ID, KalturaMetadataObjectType::ENTRY, $entry->id, $customMetadata);	
+			$this->logToFile('SUCCESS synced custom metadata fields to entry id: '.$entry->id);
 		}
 		
-		$this->logToFile('==== SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id);
+		$this->logToFile('SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id);
 	}
 }
 
