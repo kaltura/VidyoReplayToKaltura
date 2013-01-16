@@ -18,10 +18,24 @@ First - Prepare The Syncer server
 1. Open the Vidyo2KalturaConfig.php file, and fill in all the credentials and configurations required (follow the instructions in the file comments)
 1. If you'd like to have all VidyoReplay Record fields synced to Kaltura's custom metadata:
     1. Make sure that user you use has write permissions to the Vidyo2KalturaConfig.php file
-    1. Run ```php php setupMetadata.php``` to add the VidyoReplay Record metadata profile to your Kaltura publisher account
+    1. Run ```bash php setupMetadata.php``` to add the VidyoReplay Record metadata profile to your Kaltura publisher account
     (Note: It will automatically configure the newly created metadata profile Id in the Vidyo2KalturaConfig.php file)
 1. Make sure that all files will be owned by the same user, and that user will be running rund.sh
 1. Make sure that the user running the syncer has write permissions to the following:
     1. syncVidyo2Kaltura.log file
     1. runner.log file
     1. /tmp/syncv2klockdir folder
+
+Running the syncer daemon
+-------------
+```bash bash rund.sh &```
+Note the '&' at the end, this will make the daemon run in the background.
+
+Check if the daemon syncer is running
+-------------
+```bash bash rund.sh status```
+If syncer is running, this will return the process id too.
+
+Killing (Stop) the daemon and syncer
+-------------
+```bash bash killd.sh```
