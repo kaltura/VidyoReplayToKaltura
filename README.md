@@ -1,9 +1,11 @@
 'Syncer' daemon script to synchronize recordings of Vidyo meetings (from VidyoReplay) to Kaltura accoutns
 ====================
+
 API connector that synchronizes recordings from VidyoReplay server (http://www.vidyo.com) to Kaltura accounts (corp.kaltura.com).
 
 First - Prepare The Syncer server
 ====================
+
 # Make sure that the server where the syncer is running has the following installed:
 ## Linux
 ## PHP 5.3+
