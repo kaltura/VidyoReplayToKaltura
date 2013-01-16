@@ -922,7 +922,7 @@ class KalturaConfiguration
 	public $partnerId    				= null;
 	public $format        				= 3;
 	public $clientTag 	  				= "php5";
-	public $curlTimeout   				= 10;
+	public $curlTimeout   				= 100;
 	public $userAgent					= '';
 	public $startZendDebuggerSession 	= false;
 	public $proxyHost                    = null;
