@@ -1,0 +1,182 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="metadata">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element id="md_0C83E457-62EB-C105-2452-41E5F27BF1D0" name="RecordingId" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>recordingId</label>
+              <key>recordingId</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The original running-int Id of the recording in VidyoReplay</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_781101A5-0FD1-4F2D-EF4E-41E698578EA0" name="RecordingGuid" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>recordingGuid</label>
+              <key>recordingGuid</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The original guid of the VidyoReplay recording.</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_C63A1E9F-B2BF-BDA3-8683-41E751C3975E" name="TenantName" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>tenantName</label>
+              <key>tenantName</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The tenant name where the recording created in VidyoReplay.</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_247DCFF9-C0BE-06B0-7CBD-41E7DE2C2963" name="UserName" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>userName</label>
+              <key>userName</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The user Id of the user who created the recording in VidyoReplay</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_7B83BF2F-0CCF-9639-79F9-41E885A9D24F" name="UserFullName" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>userFullName</label>
+              <key>userFullName</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The Full Name of the user who created the reording in VidyoReplay (Note: Full Name is not unique like user Id)</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_60230EC7-84D4-A1AD-B83E-41E8F928B52C" name="DateCreated" minOccurs="0" maxOccurs="1" type="dateType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>dateCreated</label>
+              <key>dateCreated</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The date and time the recording was created in VidyoReplay.</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_EBF4DE8D-32C4-12B5-CE9B-41E9C9D95A7E" name="EndTime" minOccurs="0" maxOccurs="1" type="dateType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>endTime</label>
+              <key>endTime</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The date and time the recording was finished (end recording) in VidyoReplay.</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_10FA2D05-F187-0FB9-AFB9-41EACB5B09A6" name="DateCreatedString" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>dateCreatedString</label>
+              <key>dateCreatedString</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>String representation of the date and time the recording was created in VidyoReplay.</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_846BA5F8-F1EB-AED1-843C-41EBB829C5F1" name="Pin" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>pin</label>
+              <key>pin</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>Whether this recording was pinned in VidyoReplay</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_239F94A3-DCC7-4D05-6A52-41EC3A68CDF2" name="RecordScope" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>recordScope</label>
+              <key>recordScope</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The recording record scope in VidyoReplay</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_BA5BA0A4-30CD-5E80-EDBA-41EC9E91EE7D" name="RoomName" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>roomName</label>
+              <key>roomName</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The name of the room where the recording was created in VidyoReplay</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_95C24EED-F822-61E9-2EBC-41ED21216068" name="RecorderId" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>recorderId</label>
+              <key>recorderId</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>The id of the recorder instance used to record the meeting in VidyoReplay</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element id="md_C595CAAF-31C8-671B-818C-41EDC60C4186" name="Locked" minOccurs="0" maxOccurs="1" type="textType">
+          <xsd:annotation>
+            <xsd:documentation></xsd:documentation>
+            <xsd:appinfo>
+              <label>locked</label>
+              <key>locked</key>
+              <searchable>true</searchable>
+              <timeControl>false</timeControl>
+              <description>Wehther this recording was marked as locked in VidyoReplay.</description>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="textType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="dateType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:long"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="objectType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:simpleType name="listType">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+</xsd:schema>
