@@ -37,6 +37,17 @@ bash rund.sh &
 ```
 Note the '&' at the end, this will make the daemon run in the background.
 
+To make the syncer daemon run at startup
+-------------
+Make sure it is executable:
+```bash
+chmod u+x rund.sh
+```
+Then add it to the end (just before ```exit 0```) of your rc.local file.
+```/etc/rc.local``` for Debian or Ubuntu
+```/etc/rc.d/rc.local``` for RedHat/CentOS
+(make sure to use full path to rund.sh).
+
 Check if the daemon syncer is running
 -------------
 ```bash 
