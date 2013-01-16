@@ -92,6 +92,12 @@ At the end of every syncer cycle, the following line will be printed:
 [2013/01/16 08:03:00] SUCCESS importing Vidyo recording: URLTORECORDINGFILE to Kaltura Entry: 1_da03vztz
 ```
 
+To constantly grep for errors in the log (for monitoring purposes), use the following:
+```bash
+tail -f syncVidyo2Kaltura.log | grep ERROR
+```
+(Replace ERROR with SUCCESS or INFO for status monitoring)   
+
 The daemon bash script, outputs any error into: runner.log
 This file will be empty always. Unless some edge error will occur, in this case it should be reported and investigated on a case by case.
 
