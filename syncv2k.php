@@ -1,5 +1,4 @@
 <?php
-ini_set('memory_limit', '128M');
 set_time_limit(0);
 //initialize the Kaltura client -
 require_once('kaltura-php5/KalturaClient.php');
