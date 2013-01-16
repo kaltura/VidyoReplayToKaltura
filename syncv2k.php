@@ -153,12 +153,22 @@ class syncv2k
 		$entry->categories = Vidyo2KalturaConfig::KALTURA_VIDYO_RECORDINGS_CATEGORY;
                 $entry = $this->client->media->add($entry);
                 $this->logToFile('==== SUCCESS creating new Kaltura Entry Id: '.$entry->id.' of recording: '.$recording->id);
-
-                // make Kaltura import the recording file from the VidyoReplay server 
+		
+		// make Kaltura import the recording file from the VidyoReplay server 
                 $resource = new KalturaUrlResource();
                 $resource->url = $recordingVideoFileUrl;
                 $this->client->media->addContent($entry->id, $resource);
-                $this->logToFile('==== SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id);
+	
+		// if we have custom metadata profile setup -
+		if (Vidyo2KalturaConfig::KALTURA_VIDYOREPLAY_METADATA_PROFILE_ID != '%metadataprofileid%') {
+			// fill the entry custom metadata (the vidyoReplay profile)
+			$dateCreated = strtotime($recording->dateCreated);
+			$endTime = strtotime($recording->endTime);
+			$customMetadata = "<metadata><RecordingId>{$recording->id}</RecordingId><RecordingGuid>{$recording->guid}</RecordingGuid><TenantName>{$recording->tenantName}</TenantName><UserName>{$recording->userName}</UserName><UserFullName>{$recording->userFullName}</UserFullName><DateCreated>{$dateCreated}</DateCreated><EndTime>{$endTime}</EndTime><DateCreatedString>{$recording->dateCreatedString}</DateCreatedString><Pin>{$recording->pin}</Pin><RecordScope>{$recording->recordScope}</RecordScope><RoomName>{$recording->roomName}</RoomName><RecorderId>{$recording->recorderId}</RecorderId><Locked>{$recording->locked}</Locked></metadata>";
+			$metadata = $this->client->metadata->add(Vidyo2KalturaConfig::KALTURA_VIDYOREPLAY_METADATA_PROFILE_ID, KalturaMetadataObjectType::ENTRY, $entry->id, $customMetadata);	
+		}
+		
+		$this->logToFile('==== SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id);
 	}
 }
 
