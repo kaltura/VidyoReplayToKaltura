@@ -89,7 +89,7 @@ Every synchronization of a specific recording will be as follow (this will repea
 ```
 At the end of every syncer cycle, the following line will be printed:
 ```log
-[2013/01/16 08:03:00] SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id
+[2013/01/16 08:03:00] SUCCESS importing Vidyo recording: http://super:password@www.vidyoreplayserver.com/replay/flvFileStreaming.flv?file=f7b86816-b57c-49c4-84d1-ac56d374bd25 to Kaltura Entry: 1_da03vztz
 ```
 
 The daemon bash script, outputs any error into: runner.log
