@@ -95,3 +95,11 @@ At the end of every syncer cycle, the following line will be printed:
 The daemon bash script, outputs any error into: runner.log
 This file will be empty always. Unless some edge error will occur, in this case it should be reported and investigated on a case by case.
 
+Potential Errors
+-------------
+The syncVidyo2Kaltura.log may show the following error:
+```log
+ERROR failed to push a batch of recordings using multirequest: Operation timed out after 10001 milliseconds with 0 bytes received
+```
+This does NOT necessarily mean that the request failed to reach Kaltura, it only indicates that the response from the server was taking long to arrive, and curl has expired its defined expirylimit
+If this error shows up in your log, edit kaltura-php5/KalturaClientBase.php and look for the definition of $curlTimeout (around line 925), increase its value to a larger int (seconds).
