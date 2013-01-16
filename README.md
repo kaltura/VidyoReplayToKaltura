@@ -7,10 +7,10 @@ First - Prepare The Syncer server
 -------------
 
 1. Make sure that the server where the syncer is running has the following installed:
-1.1. Linux
-1.1. PHP 5.3+
-1.1. curl and php-curl
-1.1. PHP support for SoapClient (since the VidyoReplay WSDL client extends SoapClient: http://php.net/manual/en/class.soapclient.php)
+  1.1. Linux
+  1.1. PHP 5.3+
+  1.1. curl and php-curl
+  1.1. PHP support for SoapClient (since the VidyoReplay WSDL client extends SoapClient: http://php.net/manual/en/class.soapclient.php)
 1. Make sure that the server has HTTP access to both the VidyoReplay server and Kaltura server
 1. Have access to the SUPER user of VidyoReplay and API Admin credentials to the Kaltura publisher account
 1. If you plan to synchronize all VidyoReplay Record fields to Kaltura custom metadata, make sure your account has custom metadata enabled
