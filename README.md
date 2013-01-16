@@ -45,3 +45,38 @@ Killing (Stop) the daemon and syncer
 ```bash 
 bash killd.sh
 ```
+
+Logging
+-------------
+The syncer main log file is: syncVidyo2Kaltura.log
+While the syncer is runing, to monitor issues, run:
+```bash
+tail -f syncVidyo2Kaltura.log
+```
+The log format for syncVidyo2Kaltura.log is: ```[YYYY/MM/DD HH:MM:SS] SUCCESS/INFO message```
+It will either print SUCCESS (indicating command successfuly executed) or INFO (indicating status info).
+Every syncer cycle will start with the following log section:
+```log
+[2013/01/16 08:02:36] SUCCESS initializing Kaltura success
+[2013/01/16 08:02:36] SUCCESS initializing Vidyo success
+[2013/01/16 08:02:36] INFO has recordings in Kaltura
+[2013/01/16 08:02:36] INFO last vidyoRecording on Kaltura is: 38, GUID: 7f4f5222-3721-4c7a-a093-2c344eae421c
+[2013/01/16 08:02:36] INFO VidyoList pre-while count: 70
+[2013/01/16 08:02:36] INFO syncing 70 new recordings
+```
+Every synchronization of a specific recording will be as follow (this will repeat for every recording synced):
+```log
+[2013/01/16 08:02:36] INFO syncing 63, GUID: f7b86816-b57c-49c4-84d1-ac56d374bd25
+[2013/01/16 08:02:37] SUCCESS creating new Kaltura Entry Id: 1_da03vztz of recording: 63
+[2013/01/16 08:02:38] SUCCESS importing Vidyo recording: http://super:password@www.vidyoreplayserver.com/replay/flvFileStreaming.flv?file=f7b86816-b57c-49c4-84d1-ac56d374bd25 to Kaltura Entry: 1_da03vztz
+[2013/01/16 08:02:38] SUCCESS synchronized recording guid: f7b86816-b57c-49c4-84d1-ac56d374bd25
+[2013/01/16 08:02:38] SUCCESS synced custom metadata fields to entry id: 1_da03vztz
+```
+At the end of every syncer cycle, the following line will be printed:
+```log
+[2013/01/16 08:03:00] SUCCESS importing Vidyo recording: '.$recordingVideoFileUrl.' to Kaltura Entry: '.$entry->id
+```
+
+The daemon bash script, outputs any error into: runner.log
+This file will be empty always. Unless some edge error will occur, in this case it should be reported and investigated on a case by case.
+
