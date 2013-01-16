@@ -63,8 +63,9 @@ bash killd.sh
 
 Logging
 -------------
-The syncer main log file is: syncVidyo2Kaltura.log
-While the syncer is runing, to monitor issues, run:
+The syncer main log file is: syncVidyo2Kaltura.log  
+This log file will be truncated every cycle (every time the script is run)  
+While the syncer is runing, to monitor issues, run:  
 ```bash
 tail -f syncVidyo2Kaltura.log
 ```
