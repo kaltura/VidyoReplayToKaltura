@@ -2,10 +2,10 @@ Syncer daemon script to synchronize meetings recordings from VidyoReplay to Kalt
 =============
 
 API connector that synchronizes recordings from VidyoReplay server (http://www.vidyo.com) to Kaltura accounts (corp.kaltura.com).  
-This script keeps VidyoReplay Library and Kaltura account in sync. 
-The syncer daemon pulls Vidyo recording files and all of the recording's metadata from VidyoReplay and creates a new ```KalturaMediaEntry``` in Kaltura.
-After the syncer script created the new entry the Kaltura server will pull the file from the VidyoReplay server and transcode the file preparing for cross-plarform delivery & playback.
-  The VidyoReplay recording metadata is saved in a custom metadata profile by the name ```vidyoreplaymetadata00```. To have recordings metadata, make sure your Kaltura account has custom metadata enabled.
+This script keeps VidyoReplay Library and Kaltura account in sync.  
+The syncer daemon pulls Vidyo recording files and all of the recording's metadata from VidyoReplay and creates a new ```KalturaMediaEntry``` in Kaltura.  
+After the syncer script created the new entry the Kaltura server will pull the file from the VidyoReplay server and transcode the file preparing for cross-plarform delivery & playback.  
+  The VidyoReplay recording metadata is saved in a custom metadata profile by the name ```vidyoreplaymetadata00```. To have recordings metadata, make sure your Kaltura account has custom metadata enabled.  
 
 Background
 -------------
