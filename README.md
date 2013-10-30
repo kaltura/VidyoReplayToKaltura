@@ -26,7 +26,7 @@ First - Prepare The Syncer server
 1. Make sure that the server has HTTP access to both the VidyoReplay server and Kaltura server
 1. Have access to the SUPER user of VidyoReplay and API Admin credentials to the Kaltura publisher account
 1. If you plan to synchronize all VidyoReplay Record fields to Kaltura custom metadata, make sure your account has custom metadata enabled
-1. Download all the syncer files (all files in this repo) and place them in a folder that is not accessible by outside users (It should be running as protected limitted user)
+1. Download this package to /opt/VidyoReplayToKaltura/ 
 1. Open the Vidyo2KalturaConfig.php file, and fill in all the credentials and configurations required (follow the instructions in the file comments)
 1. If you'd like to have all VidyoReplay Record fields synced to Kaltura's custom metadata:
     1. Make sure that user you use has write permissions to the Vidyo2KalturaConfig.php file
@@ -41,7 +41,7 @@ First - Prepare The Syncer server
 Running the syncer daemon
 -------------
 ```bash
-bash rund.sh &
+nohup ./rund.sh 0<&- &> /opt/VidyoReplayToKaltura/runner.log &
 ```
 Note the '&' at the end, this will make the daemon run in the background.
 
