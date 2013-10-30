@@ -18,7 +18,7 @@ See below for logging details.
 First - Prepare The Syncer server
 -------------
 
-1. Make sure that the server where the syncer is running has the following installed:
+1. Make sure that the server where the syncer is running has the following installed: ```sudo apt-get install git php5 php5-cli curl php5-curl php-soap```
     1. Linux
     1. PHP 5.3+
     1. curl and php-curl
