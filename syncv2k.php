@@ -93,27 +93,41 @@ class syncv2k
 		// list Vidyo recordings, ascending by date
 		// this will bring the oldest 200 (VidyoReplay's API max limit), we'll need to loop through all the recordings till we find the last 
 		// recording that was synced with Kaltura (or begin synchronization with recording 0)
-		$start = $recordingStartSearch; //our start is either 0 (in case we have no recordings in Kaltura, or we want to resync all)
+		//$start = $recordingStartSearch; //our start is either 0 (in case we have no recordings in Kaltura, or we want to resync all)
+		$start = 0; //always start from 0 since Vidyo has a bug with paging, this will allow us to loop through everything in vidyoreplay and decide ourselves what to sync and what not.
 		$bundles = 100; //this must always be larger than 1 and max 200/null (defines how many recordings to pull each request)
 		$recordingsArray = array();
 		$recordsSearch = new RecordsSearchRequest(null, null, null, null, null, sortBy::date, sortDirection::ASC, $bundles, $start, null);
 		$recordsSearchResult = $this->vidyoClient->RecordsSearch($recordsSearch);
+
+		//if we got only one record back -
 		if (!is_array($recordsSearchResult->records) && $recordsSearchResult->records != null) {
-		        // VidyoReplay tends to return a single recording as an object on its own instead of inside an Array
-		        $recordingsArray[] = $recordsSearchResult->records;
+			$recording = $recordsSearchResult->records;
+			if ($recording->id > $recordingStartSearch) { //make sure we don't already have this recording in Kaltura
+                        	$recordingsArray[] = $recording;
+                        }
 		}
+		
+		//if we have more than a single recording in the vidyoreplay library -
+		//run through the rest of the VidyoReplay library to get all of the recordings using paging (start and bundles)
 		while (is_array($recordsSearchResult->records) && count($recordsSearchResult->records) > 0) {
-		        $recordingsArray = array_merge($recordingsArray, $recordsSearchResult->records);
+			// VidyoReplay tends to return a single recording as an object on its own instead of inside an Array
+                        foreach($recordsSearchResult->records as $recording) {
+                                if ($recording->id > $recordingStartSearch) { //make sure we don't already have this recording in Kaltura
+                                        $recordingsArray[] = $recording;
+                                }
+                        }
 		        $start += $bundles;
 		        $recordsSearch = new RecordsSearchRequest(null, null, null, null, null, sortBy::date, sortDirection::ASC, $bundles, $start, null);
 		        $recordsSearchResult = $this->vidyoClient->RecordsSearch($recordsSearch);
 		}
+
 		$vidyoRecordsCount = count($recordingsArray);
 		$this->logToFile('INFO syncing '.$vidyoRecordsCount.' new recordings');
 		if (($vidyoRecordsCount == 0) || ($entry && $recordingsArray[$vidyoRecordsCount-1]->id == $entry->partnerSortValue)) {
                         $this->logToFile('INFO All VidyoReplay recordings are synced in Kaltura. Exiting syncer cycle.');
 		} else {
-			$multiRequestBatches = 30;
+			$multiRequestBatches = 50;
 			$count = 0;
 			$this->client->startMultiRequest();
 			foreach ($recordingsArray as $recording)
@@ -132,6 +146,7 @@ class syncv2k
 				}
 				$count += 1;
 			}
+			//clean the last batch of multirequest (send it to Kaltura) - 
 			if ($this->client->isMultiRequest() == true) {
 				try {
                                         $multiRequest = $this->client->doMultiRequest();
@@ -160,7 +175,7 @@ class syncv2k
                 $entry->mediaType = KalturaMediaType::VIDEO;
                 $entry->referenceId = $recording->guid;
                 $entry->partnerSortValue = $recording->id;
-                $entry->userId = $recording->userFullName;
+                $entry->userId = $recording->userName;
                 $entry->tags = Vidyo2KalturaConfig::VIDYO_KALTURA_TAGS.','.$recording->tags;
                 $entry->name = $recording->title;
                 $entry->description = $recording->comments;
