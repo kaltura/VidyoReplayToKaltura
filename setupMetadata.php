@@ -36,13 +36,18 @@ if($results->totalCount == 0) {
 	$configFile = file_get_contents('Vidyo2KalturaConfig.php');
 	$configFile = str_replace('\'%metadataprofileid%\'', $metadataProfile->id, $configFile);
 	file_put_contents('Vidyo2KalturaConfig.php', $configFile);
-	echo PHP_EOL.'config file updated: '.PHP_EOL.$configFile.PHP_EOL;
+	echo PHP_EOL.'config file updated: '.PHP_EOL;
 } else {
 	$metadataProfile = $results->objects[0];
+	echo 'found existing metadata profile, id: '.$metadataProfile->id.PHP_EOL;
+        $configFile = file_get_contents('Vidyo2KalturaConfig.php');
+        $configFile = str_replace('\'%metadataprofileid%\'', $metadataProfile->id, $configFile);
+        file_put_contents('Vidyo2KalturaConfig.php', $configFile);
+        echo PHP_EOL.'config file updated: '.PHP_EOL;
 }
 $metadataProfileId = $metadataProfile->id;
 $results = $client->metadataProfile->listfields($metadataProfileId);
-echo 'the list of metdata fields:'.PHP_EOL;
+echo 'the list of metdata fields (on profile id '.$metadataProfileId.'):'.PHP_EOL;
 $metadataTemplate = '<metadata>'.PHP_EOL;
 foreach ($results->objects as $metadataField) {
 	$metadataTemplate .= '<'.$metadataField->key.'>VALUE_HERE:'.$metadataField->key.'</'.$metadataField->key.'>'.PHP_EOL;
