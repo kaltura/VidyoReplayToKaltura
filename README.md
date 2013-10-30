@@ -51,7 +51,7 @@ To make the syncer daemon run at startup
 chmod u+x rund.sh
 chmod u+x killd.sh
 sudo mv rund.sh /etc/init.d/vidyoreplaysyncd.sh
-ln -s /etc/init.d/vidyoreplaysyncd.sh ~/VidyoReplayToKaltura/vidyoreplaysyncd.sh # this is for ease of editing 
+ln -s /etc/init.d/vidyoreplaysyncd.sh /opt/VidyoReplayToKaltura/vidyoreplaysyncd.sh # this is for ease of editing 
 sudo update-rc.d vidyoreplaysyncd.sh defaults
 ```
 
