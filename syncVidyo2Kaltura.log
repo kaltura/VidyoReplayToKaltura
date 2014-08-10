@@ -1,9 +1,12 @@
-[2012/05/25 02:29:18] SUCCESS initializing Kaltura success
-[2012/05/25 02:29:18] SUCCESS initializing Vidyo success
-[2012/05/25 02:29:18] *=== has recordings in Kaltura
-[2012/05/25 02:29:18] ==== last vidyoRecording on Kaltura is: 7, GUID: 5995666a-ae2a-4c4d-bf9e-dd3a55e194c8
-[2012/05/25 02:29:18] SUCCESS list Vidyo success
-[2012/05/25 02:29:18] ==== syncing 0 new recordings
-[2012/05/25 02:29:18] KALTURA AND VIDYO ARE ALREADY IN SYNC...
-[2012/05/25 02:29:18] EXITING.
-[2012/05/25 02:29:18] **** SUCCESS Kaltura and Vidyo are synced! (7 recordings)
+[2014/08/10 03:59:27] SUCCESS initializing Vidyo success config 0
+[2014/08/10 03:59:27] SUCCESS initializing Vidyo success config 1
+[2014/08/10 03:59:27] INFO has recordings in Kaltura (config 0)
+[2014/08/10 03:59:27] INFO last vidyoRecording on Kaltura (config 0) is: 238, GUID: 46d2fb10-5fde-43f7-a33b-1ae7f706da5c
+[2014/08/10 03:59:28] INFO syncing 0 new recordings
+[2014/08/10 03:59:28] INFO All VidyoReplay recordings are synced in Kaltura. Exiting syncer cycle. config: 0
+[2014/08/10 03:59:28] SUCCESS Kaltura and Vidyo are synced! (0 recordings) config 0
+[2014/08/10 03:59:29] INFO has recordings in Kaltura (config 1)
+[2014/08/10 03:59:29] INFO last vidyoRecording on Kaltura (config 1) is: 436, GUID: 06f2ebcb-1ca4-4a38-be61-6404c56a8aa9
+[2014/08/10 03:59:30] INFO syncing 0 new recordings
+[2014/08/10 03:59:30] INFO All VidyoReplay recordings are synced in Kaltura. Exiting syncer cycle. config: 1
+[2014/08/10 03:59:30] SUCCESS Kaltura and Vidyo are synced! (0 recordings) config 1
