@@ -1,9 +1,0 @@
-[2012/05/25 02:29:18] SUCCESS initializing Kaltura success
-[2012/05/25 02:29:18] SUCCESS initializing Vidyo success
-[2012/05/25 02:29:18] *=== has recordings in Kaltura
-[2012/05/25 02:29:18] ==== last vidyoRecording on Kaltura is: 7, GUID: 5995666a-ae2a-4c4d-bf9e-dd3a55e194c8
-[2012/05/25 02:29:18] SUCCESS list Vidyo success
-[2012/05/25 02:29:18] ==== syncing 0 new recordings
-[2012/05/25 02:29:18] KALTURA AND VIDYO ARE ALREADY IN SYNC...
-[2012/05/25 02:29:18] EXITING.
-[2012/05/25 02:29:18] **** SUCCESS Kaltura and Vidyo are synced! (7 recordings)

@@ -1,8 +1,8 @@
 Syncer daemon script to synchronize meetings recordings from VidyoReplay to Kaltura
 =============
 
-API connector that synchronizes recordings from VidyoReplay server (http://www.vidyo.com) to Kaltura accounts (corp.kaltura.com).  
-This script keeps VidyoReplay Library and Kaltura account in sync.  
+API connector that synchronizes recordings from VidyoReplay server(s) (http://www.vidyo.com) to Kaltura accounts (corp.kaltura.com).
+This script keeps VidyoReplay Library and Kaltura account in sync as a one way operation, deleted Vidyo recordings are not deleted.
 The syncer daemon pulls Vidyo recording files and all of the recording's metadata from VidyoReplay and creates a new ```KalturaMediaEntry``` in Kaltura.  
 After the syncer script created the new entry the Kaltura server will pull the file from the VidyoReplay server and transcode the file preparing for cross-plarform delivery & playback.  
   The VidyoReplay recording metadata is saved in a custom metadata profile by the name ```vidyoreplaymetadata00```. To have recordings metadata, make sure your Kaltura account has custom metadata enabled.  
@@ -19,7 +19,7 @@ First - Prepare The Syncer server
 -------------
 
 1. Make sure that the server where the syncer is running has the following installed: ```sudo apt-get install git php5 php5-cli curl php5-curl php-soap```
-    1. Linux
+    1. Linux/Mac OS X
     1. PHP 5.3+
     1. curl and php-curl
     1. PHP support for SoapClient (since the VidyoReplay WSDL client extends SoapClient: http://php.net/manual/en/class.soapclient.php)
@@ -27,9 +27,10 @@ First - Prepare The Syncer server
 1. Have access to the SUPER user of VidyoReplay and API Admin credentials to the Kaltura publisher account
 1. If you plan to synchronize all VidyoReplay Record fields to Kaltura custom metadata, make sure your account has custom metadata enabled
 1. Download this package to /opt/VidyoReplayToKaltura/ 
-1. Open the Vidyo2KalturaConfig.php file, and fill in all the credentials and configurations required (follow the instructions in the file comments)
+1. Open the Vidyo2KalturaConfig.php file, and fill in all the credentials and configurations required (follow the instructions in the file comments) the sample has 2 configurations set, you are welcome to add more or remove unneeded entries
 1. If you'd like to have all VidyoReplay Record fields synced to Kaltura's custom metadata:
     1. Make sure that user you use has write permissions to the Vidyo2KalturaConfig.php file
+    1. Make sure that the '%metadataprofileidX%' token contains the index of the configuration (starts from zero) like in the sample.
     1. Run ```php setupMetadata.php``` to add the VidyoReplay Record metadata profile to your Kaltura publisher account
     (Note: It will automatically configure the newly created metadata profile Id in the Vidyo2KalturaConfig.php file)
 1. Make sure that all files will be owned by the same user, and that user will be running rund.sh
@@ -117,3 +118,7 @@ ERROR failed to push a batch of recordings using multirequest: Operation timed o
 ```
 This does NOT necessarily mean that the request failed to reach Kaltura, it only indicates that the response from the server was taking long to arrive, and curl has expired its defined expirylimit
 If this error shows up in your log, edit kaltura-php5/KalturaClientBase.php and look for the definition of $curlTimeout (around line 925), increase its value to a larger int (seconds).
+
+As Vidyo Replay recycles IDs, in sites that have many recordings, memory usage of the script may be high.
+
+The VIDYO_KALTURA_TAGS setting should be unique in the Kaltura partner to maximize performance, especially when using a many(Vidyo)-to-one(Kaltura) configuration.
